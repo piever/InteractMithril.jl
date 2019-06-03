@@ -16,6 +16,7 @@ Widgets.render(m::MithrilComponent) = mithril(template(m), data(m))
 
 Observables.observe(m::MithrilComponent) = Observables.observe(getfield(m, :observe))
 
+Base.propertynames(m::MithrilComponent) = propertynames(data(m))
 Base.getproperty(m::MithrilComponent, s::Symbol) = getproperty(data(m), s)[]
 function Base.setproperty!(m::MithrilComponent, s::Symbol, val)
     setindex!(getproperty(data(m), s), val)

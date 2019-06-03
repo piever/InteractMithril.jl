@@ -2,7 +2,7 @@ module InteractMithril
 
 using WebIO: Scope, JSString, @js_str, onimport, setobservable!, onjs, WebIO
 using Widgets: AbstractWidget, Widgets
-using Observables: Observable, AbstractObservable, ObservablePair, Observables
+using Observables: on, Observable, AbstractObservable, ObservablePair, Observables
 using Dates
 using Colors: Colorant, hex
 
