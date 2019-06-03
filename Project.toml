@@ -4,7 +4,9 @@ authors = ["Pietro Vertechi <pietro.vertechi@neuro.fchampalimaud.org>"]
 version = "0.1.0"
 
 [deps]
+Observables = "510215fc-4207-5dde-b226-833fc4488ee2"
 WebIO = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
+Widgets = "cc8bc4a8-27d6-5769-a93b-9d913e69aa62"
 
 [compat]
 julia = "1"
