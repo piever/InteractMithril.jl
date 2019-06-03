@@ -1,18 +1,20 @@
 struct MithrilComponent{T, S}<:AbstractWidget{T, S}
     template::JSString
     data::NamedTuple
+    observe::AbstractObservable{S}
+    function MithrilComponent{T}(template::JSString, data::NamedTuple, observe::AbstractObservable{S}) where {T, S}
+        new{T, S}(template, data, observe)
+    end
 end
 
-template(m::MithrilComponent) = getfield(m ,:template)
-data(m::MithrilComponent) = getfield(m ,:data)
+MithrilComponent{T}(template, data) where {T} = MithrilComponent{T}(template, data, get(data, :value, Observable(nothing))) 
 
-function (m::MithrilComponent{T, S})(; kwargs...) where {T, S}
-    MithrilComponent{T, S}(template(m), merge(data(m), values(kwargs)))
-end
+template(m::MithrilComponent) = getfield(m, :template)
+data(m::MithrilComponent) = getfield(m, :data)
 
 Widgets.render(m::MithrilComponent) = mithril(template(m), data(m))
 
-Observables.observe(m::MithrilComponent) = data(m).value
+Observables.observe(m::MithrilComponent) = Observables.observe(getfield(m, :observe))
 
 Base.getproperty(m::MithrilComponent, s::Symbol) = getproperty(data(m), s)[]
 function Base.setproperty!(m::MithrilComponent, s::Symbol, val)

@@ -4,7 +4,10 @@ to_observable(o) = Observable(o)
 
 function mithril(template::JSString, data)
     s = Scope(imports =
-        ["https://unpkg.com/mithril@next/mithril.js"]
+        [
+         "https://unpkg.com/mithril@next/mithril.js",
+         "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
+        ]
     )
     datanames = String[]
     for (key, val) in pairs(data)
