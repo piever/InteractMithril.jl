@@ -3,11 +3,11 @@ uuid = "4162ef26-8546-11e9-30d6-d9818006973d"
 authors = ["Pietro Vertechi <pietro.vertechi@neuro.fchampalimaud.org>"]
 version = "0.1.0"
 
+[deps]
+WebIO = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
+
 [compat]
 julia = "1"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
