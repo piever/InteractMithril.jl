@@ -1,3 +1,7 @@
+to_observable(o::Observable) = o
+to_observable(o::AbstractObservable) = Observables.observe(o)
+to_observable(o) = Observable(o)
+
 function mithril(template::JSString, data)
     s = Scope(imports =
         ["https://unpkg.com/mithril@next/mithril.js"]
@@ -5,9 +9,9 @@ function mithril(template::JSString, data)
     datanames = String[]
     for (key, val) in pairs(data)
         skey = string(key)
-        setobservable!(s, skey, val)
+        setobservable!(s, skey, to_observable(val))
         push!(datanames, skey)
-        onjs(s[skey], js"function (val) {this.m.redraw()}")
+        onjs(s[skey], js"function (value) {this.m.redraw()}")
     end
     onimport(s, js"""
     function (m) {
