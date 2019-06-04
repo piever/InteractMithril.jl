@@ -1,15 +1,10 @@
-const default_input_attrs = (
-                             value = "",
-                             type = "text",
-                             disabled = false,
-                             style = "",
-                             class = "input",
-                             changes = 0,
-                            )
+const default_attrs = (disabled = false, style = "", class = "", changes = 0)
+const default_input_attrs = merge(default_attrs, (value = "", type = "text"))
 
 function input(;
                oninput = js"function () {data.value = this.value;}",
                onchange = js"function () {data.changes = data.changes + 1;}", 
+               selector = "input.input",
                kwargs...)
 
     datavals = merge(default_input_attrs, values(kwargs))
@@ -18,7 +13,7 @@ function input(;
     attrs = Dict(key => js"data[$key]" for key in keys(data))
     attrs[:oninput] = oninput
     attrs[:onchange] = onchange
-    template = js"{view: function (vnode) {return m('input', $attrs);}}"
+    template = js"{view: function (vnode) {return m($selector, $attrs);}}"
 
     return MithrilComponent{:input}(template, data)
 end
@@ -77,4 +72,19 @@ function spinbox(; value = Observable{Union{Int, Nothing}}(nothing), type = "", 
     end)
     
     MithrilComponent{:spinbox}(template(m), data(m), value)
+end
+
+const default_button_attrs = merge(default_attrs, (changes = 0,))
+
+function button(children...; kwargs...)
+    datavals = merge(default_button_attrs, values(kwargs))
+    data = map(to_observable, datavals)
+
+    attrs = Dict(key => js"data[$key]" for key in keys(data))
+    attrs[:onclick] = js"function () {data.changes = data.changes + 1;}"
+
+    template = js"""
+    {view: function (vnode) {return m('button.button', $attrs, $children);}}
+    """
+    MithrilComponent{:button}(template, data, data.changes)
 end
