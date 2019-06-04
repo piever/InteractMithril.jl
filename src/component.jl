@@ -3,11 +3,13 @@ struct MithrilComponent{T, S}<:AbstractWidget{T, S}
     data::NamedTuple
     observe::AbstractObservable{S}
     function MithrilComponent{T}(template::JSString, data::NamedTuple, observe::AbstractObservable{S}) where {T, S}
-        new{T, S}(template, data, observe)
+        new{T, S}(template, map(to_observable, data), observe)
     end
 end
 
 MithrilComponent{T}(template, data) where {T} = MithrilComponent{T}(template, data, get(data, :value, Observable(nothing))) 
+
+MithrilComponent(args...) = MithrilComponent{:default}(args...)
 
 template(m::MithrilComponent) = getfield(m, :template)
 data(m::MithrilComponent) = getfield(m, :data)
