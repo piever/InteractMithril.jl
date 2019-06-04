@@ -6,7 +6,7 @@ function mithril(template::JSString, data)
     s = Scope(imports =
         [
          "https://unpkg.com/mithril@next/mithril.js",
-         "https://www.gitcdn.xyz/repo/piever/InteractResources/v0.4.0/bulma/main.min.css",
+         "https://www.gitcdn.xyz/repo/piever/InteractResources/v0.4.0/bulma/main_confined.min.css"
         ]
     )
     datanames = String[]
@@ -31,7 +31,7 @@ function mithril(template::JSString, data)
         }
         var data = new Data($datanames);
         var template = $template;
-        m.mount(_webIOScope.dom, {view: function () {return m(template);}})
+        m.mount(_webIOScope.dom, {view: function () {return m("div.interact-widget", m(template));}})
     }
     """)
     return s
