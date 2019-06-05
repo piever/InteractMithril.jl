@@ -11,7 +11,6 @@ import JSON
 
 export mithril, MithrilComponent
 
-include("mithril.jl")
 include("component.jl")
 include("input.jl")
 include("slider.jl")

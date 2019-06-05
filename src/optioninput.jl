@@ -13,10 +13,9 @@ function checkboxes(; options, value, multiple = true)
         check = js"option.value == data.value"
     end
     template = js"""
-    m({
+    {
         view: function () {
             var list = data.options;
-            console.log(list);
             var children = list.map(function (option) {
                 return m("div.field", [
                     m("input", {
@@ -24,7 +23,6 @@ function checkboxes(; options, value, multiple = true)
                         value: option.value,
                         checked: $check,
                         onchange: function (e) {
-                            console.log('updating');
                             $update
                         }}),
                     m("label", option.name)
@@ -32,7 +30,7 @@ function checkboxes(; options, value, multiple = true)
             })
             return m("div", children);
         }
-    })
+    }
     """
     MithrilWidget{:checkboxes}(MithrilComponent(template, (options = options, value = value)), value)
 end 

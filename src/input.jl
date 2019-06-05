@@ -13,9 +13,9 @@ function input(;
     attrs = Dict(key => js"data[$key]" for key in keys(data))
     attrs[:oninput] = oninput
     attrs[:onchange] = onchange
-    template = js"m($selector, $attrs)"
-
-    return MithrilWidget{:input}(MithrilComponent(template, data), data.value)
+    template = js"{view: () => m($selector, $attrs)}"
+    m = MithrilComponent(template, data)
+    return MithrilWidget{:input}(m, data.value)
 end
 
 _parse(::Type{S}, x) where{S} = parse(S, x)
@@ -83,6 +83,6 @@ function button(children...; kwargs...)
     attrs = Dict(key => js"data[$key]" for key in keys(data))
     attrs[:onclick] = js"function () {data.changes = data.changes + 1;}"
 
-    template = js"m('button.button', $attrs, $children)"
+    template = js"{view: () => m('button.button', $attrs, $children)}"
     MithrilWidget{:button}(MithrilComponent(template, data), data.changes)
 end

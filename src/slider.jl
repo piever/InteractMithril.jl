@@ -15,4 +15,3 @@ function slider(; min = 0, max = 100, step = 1, value = nothing, type = "", kwar
               oninput = oninput, selector = "input.slider", kwargs...)
     MithrilWidget{:slider}(component(m), value)
 end
-
