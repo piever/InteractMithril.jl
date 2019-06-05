@@ -83,6 +83,6 @@ function button(children...; kwargs...)
     attrs = Dict(key => js"data[$key]" for key in keys(data))
     attrs[:onclick] = js"function () {data.changes = data.changes + 1;}"
 
-    template = js"{view: () => m('button.button', $attrs, $children)}"
+    template = node("button.button", children..., attributes = attrs)
     MithrilWidget{:button}(MithrilComponent(template, data), data.changes)
 end
