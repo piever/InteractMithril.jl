@@ -21,16 +21,14 @@ function print_component(io::IO, n::Node)
     print(io, ", {")
     properties = props(n)
     attributes = get(properties, :attributes, Dict())
-    for (key, val) in Iterators.flatten([attributes, properties])
+    events = get(properties, :events, Dict())
+    pairs = Iterators.flatten([attributes, properties, ("on$key" => val for (key, val) in events)])
+    for (key, val) in pairs
         key in (:attributes, :events) && continue
-        print(io, key, ": ")
+        printjs(io, key)
+        print(io, ": ")
         printjs(io, val)
         print(io, ",")
-    end
-    for (key, val) in get(properties, :events, Dict())
-        print(io, "on", key, ": ")
-        printjs(io, val)
-        print(io, ", ")
     end
     print(io, "}")
     print(io, ", [")
