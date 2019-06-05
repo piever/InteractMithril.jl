@@ -13,6 +13,6 @@ function slider(; min = 0, max = 100, step = 1, value = nothing, type = "", kwar
     oninput = js"function() {data.value = parseFloat(this.value);}"
     m = input(; min = min, max = max, step = step, value = value, type = "range",
               oninput = oninput, selector = "input.slider", kwargs...)
-    MithrilComponent{:slider}(template(m), data(m), value)
+    MithrilWidget{:slider}(component(m), value)
 end
 

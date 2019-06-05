@@ -13,9 +13,9 @@ function input(;
     attrs = Dict(key => js"data[$key]" for key in keys(data))
     attrs[:oninput] = oninput
     attrs[:onchange] = onchange
-    template = js"{view: function (vnode) {return m($selector, $attrs);}}"
+    template = js"m($selector, $attrs)"
 
-    return MithrilComponent{:input}(template, data)
+    return MithrilWidget{:input}(MithrilComponent(template, data), data.value)
 end
 
 _parse(::Type{S}, x) where{S} = parse(S, x)
@@ -43,7 +43,7 @@ for (func, typ, type) in [(:timepicker, :(Dates.Time), "time"), (:datepicker, :(
         string_value = Observable{String}(f(value[]))
         ObservablePair(value, string_value, f = f, g = g)
         m = input(; value = string_value, type = $type, kwargs...)
-        MithrilComponent{$(Expr(:quote, func))}(template(m), data(m), value)
+        MithrilWidget{$(Expr(:quote, func))}(component(m), value)
     end
 end
 
@@ -71,7 +71,7 @@ function spinbox(; value = Observable{Union{Int, Nothing}}(nothing), type = "", 
         end
     end)
     
-    MithrilComponent{:spinbox}(template(m), data(m), value)
+    MithrilWidget{:spinbox}(component(m), value)
 end
 
 const default_button_attrs = merge(default_attrs, (changes = 0,))
@@ -83,8 +83,6 @@ function button(children...; kwargs...)
     attrs = Dict(key => js"data[$key]" for key in keys(data))
     attrs[:onclick] = js"function () {data.changes = data.changes + 1;}"
 
-    template = js"""
-    {view: function (vnode) {return m('button.button', $attrs, $children);}}
-    """
-    MithrilComponent{:button}(template, data, data.changes)
+    template = js"m('button.button', $attrs, $children)"
+    MithrilWidget{:button}(MithrilComponent(template, data), data.changes)
 end

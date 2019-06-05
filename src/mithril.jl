@@ -2,7 +2,7 @@ to_observable(o::Observable) = o
 to_observable(o::AbstractObservable) = Observables.observe(o)
 to_observable(o) = Observable(o)
 
-function mithril(template::JSString, data)
+function mithril(f, data)
     s = Scope(imports =
         [
          "https://unpkg.com/mithril@next/mithril.js",
@@ -16,7 +16,8 @@ function mithril(template::JSString, data)
         push!(datanames, skey)
         onjs(s[skey], js"function (value) {this.m.redraw()}")
     end
-    onimport(s, js"""
+    io = IOBuffer()
+    print(io, js"""
     function (m) {
         this.m = m;
         function addProperty(obj, name) {
@@ -30,9 +31,10 @@ function mithril(template::JSString, data)
             for (key of names) {addProperty(this, key);}
         }
         var data = new Data($datanames);
-        var template = $template;
-        m.mount(_webIOScope.dom, {view: function () {return m("div.interact-widget", m(template));}})
-    }
     """)
+    print(io, "m.mount(_webIOScope.dom, {view: function () {return m('div.interact-widget', ")
+    f(io)
+    print(io, ");}});\n}")
+    onimport(s, JSString(String(take!(io))))
     return s
 end
