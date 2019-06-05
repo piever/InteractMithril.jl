@@ -11,9 +11,11 @@ JSON.show_json(io::JSONContext, ::MithrilSerialization, x::JSString) = print(io,
 
 printjs(io::IO, val) = JSON.show_json(io, MithrilSerialization(), val)
 
-print_vnode(io::IO, x) = printjs(io, x) 
+print_component(io::IO, x) = printjs(io, x) 
+print_component(io::IO, f::Function) = f(io)
+print_component(io::IO, s::JSString) = print(io, s)
 
-function print_vnode(io::IO, n::Node)
+function print_component(io::IO, n::Node)
     print(io, "m(")
     printjs(io, instanceof(n).tag)
     print(io, ", {")
@@ -33,7 +35,7 @@ function print_vnode(io::IO, n::Node)
     print(io, "}")
     print(io, ", [")
     for child in children(n)
-        print_vnode(io, child)
+        print_component(io, child)
         print(io, ", ")
     end
     print(io, "])")
@@ -59,13 +61,13 @@ end
 
 WebIO.render(m::MithrilComponent) = WebIO.render(Scope(m))
 
-function print_vnode(io::IO, m::MithrilComponent{<:Node})
+function print_component(io::IO, m::MithrilComponent{<:Node})
     print(io, "{view: () => ")
-    print_vnode(io, template(m))
+    print_component(io, template(m))
     print(io, "}")
 end
 
-print_vnode(io::IO, m::MithrilComponent) = print_vnode(io, template(m))
+print_component(io::IO, m::MithrilComponent) = print_component(io, template(m))
 
 function WebIO.Scope(m::MithrilComponent)
     s = Scope(imports =
@@ -98,7 +100,7 @@ function WebIO.Scope(m::MithrilComponent)
         var data = new Data($datanames);
     """)
     print(io, "var template = ")
-    print_vnode(io, m)
+    print_component(io, m)
     print(io, ";\n")
     print(io, "m.mount(_webIOScope.dom, {view: function () {return m('div.interact-widget', m(template));}});\n}")
     onimport(s, JSString(String(take!(io))))
